@@ -1,7 +1,8 @@
 [project]
-name = "py-cron-checker"
+name = "py-quartz-cron-checker"
 version = "0.1.0"
-description = "Add your description here"
+description = "Simple Python library to check if a Quartz cron expression is valid."
+authors = [{ name = "Jessica Smith", email = "j.smith.git1@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = ["attrs>=25.3.0"]
@@ -12,3 +13,7 @@ test = ["hypothesis>=6.131.30", "pytest>=8.3.5"]
 
 [tool.uv]
 default-groups = ["test"]
+
+[build-system]
+requires = ["setuptools >= 80"]
+build-backend = "setuptools.build_meta"

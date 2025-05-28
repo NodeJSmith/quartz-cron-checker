@@ -2,8 +2,8 @@ from typing import Literal
 
 import attrs
 
-from py_cron_checker.exceptions import InvalidCronStructureError
-from py_cron_checker.validators import validate_day_of_month_or_week
+from py_quartz_cron_checker.exceptions import InvalidCronStructureError
+from py_quartz_cron_checker.validators import validate_day_of_month_or_week
 
 from .config import (
     DAY_OF_MONTH_CONFIG,
