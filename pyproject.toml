@@ -1,0 +1,14 @@
+[project]
+name = "py-cron-checker"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["attrs>=25.3.0"]
+
+[dependency-groups]
+test = ["hypothesis>=6.131.30", "pytest>=8.3.5"]
+
+
+[tool.uv]
+default-groups = ["test"]
