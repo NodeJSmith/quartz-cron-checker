@@ -10,7 +10,6 @@ from .constants import (
 
 def try_parse_int(value: str) -> int | None:
     """Try to parse a string as an integer, return None if it fails."""
-
     if value is None:
         return None
 
@@ -28,11 +27,11 @@ def try_parse_increment(part: str, min_value: int) -> tuple[int, int] | None:
 
     Args:
         part (str): The part to parse.
+        min_value (int): The minimum value for the base.
 
     Returns:
         tuple[int, int] | None: A tuple of (base, increment) if successful, None if it fails.
     """
-
     if INCREMENT_PATTERN.match(part) is None:
         return None
 
@@ -70,7 +69,6 @@ def try_parse_range(part: str) -> tuple[int, int] | None:
 
 def try_parse_range_with_increment(part: str) -> tuple[int, int, int] | None:
     """Try to parse a 'start-end/increment' cron expression."""
-
     if part is None:
         return None
 

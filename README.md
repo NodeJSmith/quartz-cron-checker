@@ -21,6 +21,8 @@ pip install quartz-cron-checker
 
 ## Usage
 
+Calling `validate` will raise an exception if the cron string is invalid. The method will return `True` otherwise.
+
 ```python
 from quartz_cron_checker import QuartzCronChecker
 
@@ -29,4 +31,17 @@ cron = QuartzCronChecker.from_cron_string("0 0 12 ? * MON-FRI")
 cron.validate()  # Raises if invalid
 
 print(str(cron))  # "0 0 12 ? * MON-FRI"
+```
+
+You can also validate either a whole cron string or individual fields without creating an object:
+```python
+from quartz_cron_checker import validate_cron_string, validate_year, validate_second
+
+# Validate a full cron string
+validate_cron_string("0 0 12 ? * MON-FRI")  # Raises if invalid
+
+# Validate individual fields
+validate_second("0")  # Raises if invalid
+
+validate_year("2023")  # Raises if invalid
 ```

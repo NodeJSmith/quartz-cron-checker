@@ -1,5 +1,6 @@
 import re
 from dataclasses import dataclass, field, replace
+from typing import Literal
 
 from quartz_cron_checker.exceptions import (
     IncrementOutOfBoundsError,
@@ -55,30 +56,41 @@ class CronFieldConfig:
     patterns: tuple[re.Pattern, ...] = field(default_factory=tuple)
     nullable: bool = False
 
-    def validate(self, part: str) -> None:
+    def validate(self, part: str) -> Literal[True]:
+        """Validate a cron field part against the configuration.
+
+        Args:
+            part (str): The cron field part to validate.
+
+        Raises:
+            PartCannotBeNoneError: If the part is None and the field is not nullable.
+            ValueOutOfBoundsError: If the part is an integer out of bounds.
+            IncrementOutOfBoundsError: If the part is an increment out of bounds.
+            RangeOutOfBoundsError: If the part is a range out of bounds.
+            RangeIncrementOutOfBoundsError: If the part is a range with increment out of bounds.
+            SpecificsOutOfBoundsError: If the part contains specific values out of bounds.
+            PatternOrLiteralMatchError: If the part does not match any allowed patterns or literals.
+
+        Returns:
+            Literal[True]: Returns True if the part is valid.
+        """
         if part is None and not self.nullable:
             raise PartCannotBeNoneError(self.name)
 
         if (int_part := try_parse_int(part)) is not None:
             if not validate_single_digit(int_part, self.min_value, self.max_value):
-                raise ValueOutOfBoundsError(
-                    self.name, part, self.min_value, self.max_value
-                )
-            return
+                raise ValueOutOfBoundsError(self.name, part, self.min_value, self.max_value)
+            return True
 
         if (inc := try_parse_increment(part, self.min_value)) is not None:
-            if not validate_increment(
-                *inc, self.min_value, self.max_value, self.increment_max
-            ):
+            if not validate_increment(*inc, self.min_value, self.max_value, self.increment_max):
                 raise IncrementOutOfBoundsError(self.name, part, self.increment_max)
-            return
+            return True
 
         if (r := try_parse_range(part)) is not None:
             if not validate_range(*r, self.min_value, self.max_value):
-                raise RangeOutOfBoundsError(
-                    self.name, part, *r, self.min_value, self.max_value
-                )
-            return
+                raise RangeOutOfBoundsError(self.name, part, *r, self.min_value, self.max_value)
+            return True
 
         if (ri := try_parse_range_with_increment(part)) is not None:
             if not validate_range_with_increment(*ri, self.min_value, self.max_value):
@@ -90,25 +102,17 @@ class CronFieldConfig:
                     self.max_value,
                     self.increment_max,
                 )
-            return
+            return True
 
         if (spec := try_parse_specifics(part)) is not None:
-            if not validate_specifics(
-                spec, range(self.min_value, self.max_value + 1), self.allowed_literals
-            ):
-                raise SpecificsOutOfBoundsError(
-                    self.name, part, spec, self.min_value, self.max_value
-                )
-            return
+            if not validate_specifics(spec, range(self.min_value, self.max_value + 1), self.allowed_literals):
+                raise SpecificsOutOfBoundsError(self.name, part, spec, self.min_value, self.max_value)
+            return True
 
-        if validate_literals(part, self.allowed_literals) or validate_patterns(
-            part, self.patterns
-        ):
-            return
+        if validate_literals(part, self.allowed_literals) or validate_patterns(part, self.patterns):
+            return True
 
-        raise PatternOrLiteralMatchError(
-            self.name, part, self.patterns, self.allowed_literals
-        )
+        raise PatternOrLiteralMatchError(self.name, part, self.patterns, self.allowed_literals)
 
 
 SECOND_CONFIG = CronFieldConfig(

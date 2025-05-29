@@ -1,6 +1,6 @@
 import re
+from collections.abc import Sequence
 from logging import getLogger
-from typing import Sequence
 
 from .exceptions import InvalidCronStructureError
 
@@ -24,7 +24,6 @@ def validate_day_of_month_or_week(
     Raises:
         InvalidCronStructureError: If the combination is invalid.
     """
-
     if day_of_month is None or day_of_week is None:
         raise InvalidCronStructureError(
             "day_of_month and day_of_week must not be None."
@@ -55,8 +54,7 @@ def validate_day_of_month_or_week(
 
 
 def validate_single_digit(part: int, min_value: int, max_value: int) -> bool:
-    """
-    Validate that a single digit is within the allowed range.
+    """Validate that a single digit is within the allowed range.
 
     Args:
         part (int): The integer to validate.
@@ -72,8 +70,7 @@ def validate_single_digit(part: int, min_value: int, max_value: int) -> bool:
 def validate_increment(
     base: int, increment: int, min_value: int, max_value: int, increment_max: int
 ) -> bool:
-    """
-    Validate that an increment expression is valid.
+    """Validate that an increment expression is valid.
 
     Args:
         base (int): The base value (e.g. from '5/10').
@@ -89,8 +86,7 @@ def validate_increment(
 
 
 def validate_range(start: int, end: int, min_value: int, max_value: int) -> bool:
-    """
-    Validate a numeric range.
+    """Validate a numeric range.
 
     Args:
         start (int): Start of the range.
@@ -107,8 +103,7 @@ def validate_range(start: int, end: int, min_value: int, max_value: int) -> bool
 def validate_range_with_increment(
     start: int, end: int, increment: int, min_value: int, max_value: int
 ) -> bool:
-    """
-    Validate a range with increment, e.g., '1-5/2'.
+    """Validate a range with increment, e.g., '1-5/2'.
 
     Args:
         start (int): Start of the range.
@@ -130,8 +125,7 @@ def validate_range_with_increment(
 def validate_specifics(
     values: list[str], valid_int_range: range, allowed_literals: set[str]
 ) -> bool:
-    """
-    Validate a list of specific values.
+    """Validate a list of specific values.
 
     Args:
         values (list[str]): The specific values, e.g. ['1', '2', '3'].
@@ -147,8 +141,7 @@ def validate_specifics(
 
 
 def validate_patterns(part: str, patterns: Sequence[re.Pattern]) -> bool:
-    """
-    Validate a part using regular expressions.
+    """Validate a part using regular expressions.
 
     Args:
         part (str): The cron field to validate.
@@ -169,8 +162,7 @@ def validate_patterns(part: str, patterns: Sequence[re.Pattern]) -> bool:
 
 
 def validate_literals(part: str, literals: set[str]) -> bool:
-    """
-    Validate a part against a set of allowed literals.
+    """Validate a part against a set of allowed literals.
 
     Args:
         part (str): The cron field to validate.

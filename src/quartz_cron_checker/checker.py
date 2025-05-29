@@ -40,7 +40,7 @@ class QuartzCronChecker:
         self.year = self.year.replace(" ", "") if self.year else None
 
     def __repr__(self) -> str:
-        return f"<CronStr {str(self)}>"
+        return f"<QuartzCronChecker {self!s}>"
 
     def __str__(self) -> str:
         parts = {
@@ -59,19 +59,28 @@ class QuartzCronChecker:
         return CRON_TEMPLATE_NO_YEAR.format(**parts)
 
     def validate(self) -> Literal[True]:
-        """
-        Validate the cron string by:
+        """Validate the cron string.
 
-        1. Ensuring required parts are present.
-        2. Checking mutual exclusivity of day_of_month and day_of_week.
-        3. Validating each part using its corresponding field config.
-        """
+        This method performs the following checks:
+            1. Ensuring required parts are present.
+            2. Checking mutual exclusivity of day_of_month and day_of_week.
+            3. Validating each part using its corresponding field config.
 
+        Raises:
+            InvalidCronStructureError: If the cron string is missing required parts or has invalid structure.
+            InvalidCronPartError: If any part of the cron string is invalid.
+            ValueOutOfBoundsError: If any part of the cron string is out of bounds.
+            IncrementOutOfBoundsError: If an increment value is out of bounds.
+            RangeOutOfBoundsError: If a range is out of bounds.
+            RangeIncrementOutOfBoundsError: If a range with increment is out of bounds.
+            SpecificsOutOfBoundsError: If specific values are out of bounds.
+
+        Returns:
+            Literal[True]: Returns True if the cron string is valid.
+        """
         if not all(getattr(self, part) for part in REQUIRED_PARTS):
             missing_parts = [part for part in REQUIRED_PARTS if not getattr(self, part)]
-            raise InvalidCronStructureError(
-                f"Missing required parts in cron string: {', '.join(missing_parts)}"
-            )
+            raise InvalidCronStructureError(f"Missing required parts in cron string: {', '.join(missing_parts)}")
 
         validate_day_of_month_or_week(self.day_of_month, self.day_of_week)
 
@@ -91,14 +100,14 @@ class QuartzCronChecker:
         return True
 
     @classmethod
-    def from_cron_string(cls, cron_str: str):
-        """Convert a cron string to a CronStr object.
+    def from_cron_string(cls, cron_str: str) -> "QuartzCronChecker":
+        """Convert a cron string to a QuartzCronChecker object.
 
         Args:
             cron_str (str): The cron string to convert.
 
         Returns:
-            CronStr: A CronStr object with the converted values.
+            QuartzCronChecker: A QuartzCronChecker object with the converted values.
         """
         cron_parts = cron_str.strip().split(" ")
         if len(cron_parts) == 6:
@@ -113,15 +122,150 @@ class QuartzCronChecker:
         )
 
     @staticmethod
-    def validate_cron_string(cron_str: str) -> bool:
+    def validate_cron_string(cron_str: str) -> Literal[True]:
         """Validate a cron string.
 
         Args:
             cron_str (str): The cron string to validate.
 
         Returns:
-            bool: True if the cron string is valid, False otherwise.
+            Literal[True]: Returns True if the cron string is valid.
+
+        Raises:
+            InvalidCronStructureError: If the cron string is invalid.
+            InvalidCronPartError: If any part of the cron string is invalid.
+            ValueOutOfBoundsError: If any part of the cron string is out of bounds.
+            IncrementOutOfBoundsError: If an increment value is out of bounds.
+            RangeOutOfBoundsError: If a range is out of bounds.
+            RangeIncrementOutOfBoundsError: If a range with increment is out of bounds.
+            SpecificsOutOfBoundsError: If specific values are out of bounds.
         """
         cron = QuartzCronChecker.from_cron_string(cron_str)
         cron.validate()
         return True
+
+
+def validate_second(part: str) -> Literal[True]:
+    """Validate the 'second' part of a cron string.
+
+    Args:
+        part (str): The 'second' part of the cron string to validate.
+
+    Returns:
+        Literal[True]: Returns True if validation is successful.
+
+    Raises:
+        InvalidCronPartError: If the 'second' part is invalid - exact error depends on the specific validation failure.
+    """
+    return SECOND_CONFIG.validate(part)
+
+
+def validate_minute(part: str) -> Literal[True]:
+    """Validate the 'minute' part of a cron string.
+
+    Args:
+        part (str): The 'minute' part of the cron string to validate.
+
+    Returns:
+        Literal[True]: Returns True if validation is successful.
+
+    Raises:
+        InvalidCronPartError: If the part is invalid - exact error depends on the specific validation failure.
+    """
+    return MINUTE_CONFIG.validate(part)
+
+
+def validate_hour(part: str) -> Literal[True]:
+    """Validate the 'hour' part of a cron string.
+
+    Args:
+        part (str): The 'hour' part of the cron string to validate.
+
+    Returns:
+        Literal[True]: Returns True if validation is successful.
+
+    Raises:
+        InvalidCronPartError: If the part is invalid - exact error depends on the specific validation failure.
+    """
+    return HOUR_CONFIG.validate(part)
+
+
+def validate_day_of_month(part: str) -> Literal[True]:
+    """Validate the 'day_of_month' part of a cron string.
+
+    Args:
+        part (str): The 'day_of_month' part of the cron string to validate.
+
+    Returns:
+        Literal[True]: Returns True if validation is successful.
+
+    Raises:
+        InvalidCronPartError: If the part is invalid - exact error depends on the specific validation failure.
+    """
+    return DAY_OF_MONTH_CONFIG.validate(part)
+
+
+def validate_month(part: str) -> Literal[True]:
+    """Validate the 'month' part of a cron string.
+
+    Args:
+        part (str): The 'month' part of the cron string to validate.
+
+    Returns:
+        Literal[True]: Returns True if validation is successful.
+
+    Raises:
+        InvalidCronPartError: If the part is invalid - exact error depends on the specific validation failure.
+    """
+    return MONTH_CONFIG.validate(part)
+
+
+def validate_day_of_week(part: str) -> Literal[True]:
+    """Validate the 'day_of_week' part of a cron string.
+
+    Args:
+        part (str): The 'day_of_week' part of the cron string to validate.
+
+    Returns:
+        Literal[True]: Returns True if validation is successful.
+
+    Raises:
+        InvalidCronPartError: If the part is invalid - exact error depends on the specific validation failure.
+    """
+    return DAY_OF_WEEK_CONFIG.validate(part)
+
+
+def validate_year(part: str) -> Literal[True]:
+    """Validate the 'year' part of a cron string.
+
+    Args:
+        part (str): The 'year' part of the cron string to validate.
+
+    Returns:
+        Literal[True]: Returns True if validation is successful.
+
+    Raises:
+        InvalidCronPartError: If the part is invalid - exact error depends on the specific validation failure.
+    """
+    return YEAR_CONFIG.validate(part)
+
+
+def validate_cron_string(cron_str: str) -> Literal[True]:
+    """Validate a cron string.
+
+    Args:
+        cron_str (str): The cron string to validate.
+
+    Returns:
+        Literal[True]: Returns True if the cron string is valid.
+
+    Raises:
+        InvalidCronStructureError: If the cron string is invalid.
+        InvalidCronPartError: If any part of the cron string is invalid.
+        ValueOutOfBoundsError: If any part of the cron string is out of bounds.
+        IncrementOutOfBoundsError: If an increment value is out of bounds.
+        RangeOutOfBoundsError: If a range is out of bounds.
+        RangeIncrementOutOfBoundsError: If a range with increment is out of bounds.
+        SpecificsOutOfBoundsError: If specific values are out of bounds.
+    """
+    return QuartzCronChecker.validate_cron_string(cron_str)

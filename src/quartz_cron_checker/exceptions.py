@@ -18,7 +18,7 @@ class InvalidCronStructureError(CronValidationError):
         super().__init__(message)
 
 
-class InvalidCronPartError(ValueError):
+class InvalidCronPartError(CronValidationError):
     part_name: str
     part_value: str | None
 
