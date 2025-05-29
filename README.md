@@ -1,6 +1,6 @@
 # quartz-cron-checker
 
-**quartz-cron-checker** is a lightweight, strict validator for [Quartz-style cron expressions](https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html) in Python.
+**quartz-cron-checker** is a lightweight (zero dependencies!), strict validator for [Quartz-style cron expressions](https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html) in Python.
 
 It ensures all parts of the cron string conform to the Quartz cron spec—including support for special characters, named values, and mutual exclusivity of day-of-month and day-of-week.
 
