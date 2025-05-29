@@ -2,7 +2,7 @@ import re
 
 import attrs
 
-from py_quartz_cron_checker.exceptions import (
+from quartz_cron_checker.exceptions import (
     IncrementOutOfBoundsError,
     PartCannotBeNoneError,
     PatternOrLiteralMatchError,
@@ -11,14 +11,14 @@ from py_quartz_cron_checker.exceptions import (
     SpecificsOutOfBoundsError,
     ValueOutOfBoundsError,
 )
-from py_quartz_cron_checker.parsers import (
+from quartz_cron_checker.parsers import (
     try_parse_increment,
     try_parse_int,
     try_parse_range,
     try_parse_range_with_increment,
     try_parse_specifics,
 )
-from py_quartz_cron_checker.validators import (
+from quartz_cron_checker.validators import (
     validate_increment,
     validate_literals,
     validate_patterns,

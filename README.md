@@ -22,7 +22,7 @@ pip install py-quartz-cron-checker
 ## Usage
 
 ```python
-from py_quartz_cron_checker import QuartzCronChecker
+from quartz_cron_checker import QuartzCronChecker
 
 # Parse and validate a cron string
 cron = QuartzCronChecker.from_cron_string("0 0 12 ? * MON-FRI")

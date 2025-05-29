@@ -8,7 +8,7 @@ import pytest
 from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
-from py_quartz_cron_checker import QuartzCronChecker
+from quartz_cron_checker import QuartzCronChecker
 
 KNOWN_GOOD_VALUES = json.loads(
     Path(__file__).parent.joinpath("good_values.json").read_text()
