@@ -41,5 +41,5 @@ jobs:
 
       - name: Run lint checks
         run: |
-          uv pip install --pre-commit
+          uv pip install pre-commit
           uv run pre-commit run --all-files
