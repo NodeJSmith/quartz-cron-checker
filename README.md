@@ -30,18 +30,37 @@ from quartz_cron_checker import QuartzCronChecker
 cron = QuartzCronChecker.from_cron_string("0 0 12 ? * MON-FRI")
 cron.validate()  # Raises if invalid
 
-print(str(cron))  # "0 0 12 ? * MON-FRI"
+# __str__ returns the original cron string
+print(cron)
+>>> 0 0 12 ? * MON-FRI
+
+# __repr__ returns a more detailed representation
+print(repr(cron))
+>>> <QuartzCronChecker(second=0, minute=0, hour=12, day_of_month=?, month=*, day_of_week=MON-FRI, year=None)>
 ```
 
 You can also validate either a whole cron string or individual fields without creating an object:
 ```python
-from quartz_cron_checker import validate_cron_string, validate_year, validate_second
+from quartz_cron_checker import validate_cron_string, validate_day_of_month, validate_second
 
 # Validate a full cron string
-validate_cron_string("0 0 12 ? * MON-FRI")  # Raises if invalid
+print(validate_cron_string("0 0 12 ? * MON-FRI"))
+>>> True
+
+print(validate_cron_string("0 0 12 ? * MON-FRI-SAT"))
+>>> PatternOrLiteralMatchError: [day_of_week=MON-FRI-SAT] Part 'MON-FRI-SAT' does not match any literal (THU, FRI, MON, SAT, TUE, WED, *, SUN, ?) or allowed pattern (Range, Increment, Range with increment, List of digits, Day of week occurrence, Last day of week in month, Day of week range, Specific day of week)
+
 
 # Validate individual fields
-validate_second("0")  # Raises if invalid
+print(validate_second("0"))
+>>> True
 
-validate_year("2023")  # Raises if invalid
+print(validate_day_of_month("13/26"))
+>>> True
+
+print(validate_day_of_month("31W"))
+>>> True
+
+print(validate_day_of_month("33W"))
+>>> PatternValidatorError: [day_of_month=33W] Part '33W' matches pattern 'Nearest weekday' ('^(\d+)W$') but failed semantic validation: must be between 1 and 31
 ```
