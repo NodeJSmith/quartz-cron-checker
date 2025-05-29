@@ -76,5 +76,7 @@
     "* * * * tue/0": "Day-of-week increment cannot be zero.",
     "* * * * */mon": "Invalid increment format with named day.",
     "* * * * 1/wed": "Mixed numeric and string value in increment.",
-    "* * * * mon/mon": "Invalid increment format using strings."
+    "* * * * mon/mon": "Invalid increment format using strings.",
+    "4-44 6-28 0,18,22 32W Apr,Jul,Oct ? 2071-2081": "Invalid day-of-month (32W)",
+    "0 0 0 L-0 * ? *": "Invalid day-of-month (L-0)"
 }
