@@ -29,9 +29,7 @@ class InvalidCronPartError(CronValidationError):
 
 
 class ValueOutOfBoundsError(InvalidCronPartError):
-    def __init__(
-        self, part_name: str, part_value: str, min_value: int, max_value: int
-    ) -> None:
+    def __init__(self, part_name: str, part_value: str, min_value: int, max_value: int) -> None:
         msg = f"Value {part_value} is out of bounds ({min_value}-{max_value})"
         super().__init__(part_name, part_value, msg)
 
@@ -99,10 +97,7 @@ class PatternOrLiteralMatchError(InvalidCronPartError):
     ) -> None:
         pattern_str = ", ".join(p.pattern for p in patterns)
         literal_str = ", ".join(literals)
-        msg = (
-            f"Part '{part_value}' does not match any allowed pattern "
-            f"({pattern_str}) or literal ({literal_str})"
-        )
+        msg = f"Part '{part_value}' does not match any allowed pattern ({pattern_str}) or literal ({literal_str})"
         super().__init__(part_name, part_value, msg)
 
 

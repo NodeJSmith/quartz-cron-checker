@@ -7,9 +7,7 @@ from .exceptions import InvalidCronStructureError
 LOGGER = getLogger(__name__)
 
 
-def validate_day_of_month_or_week(
-    day_of_month: str | int | None, day_of_week: str | int | None
-) -> None:
+def validate_day_of_month_or_week(day_of_month: str | int | None, day_of_week: str | int | None) -> None:
     """Raise an error if the day of month and day of week are not valid.
 
     With quartz cron, the day of month and day of week are mutually exclusive.
@@ -25,32 +23,22 @@ def validate_day_of_month_or_week(
         InvalidCronStructureError: If the combination is invalid.
     """
     if day_of_month is None or day_of_week is None:
-        raise InvalidCronStructureError(
-            "day_of_month and day_of_week must not be None."
-        )
+        raise InvalidCronStructureError("day_of_month and day_of_week must not be None.")
 
     day_of_month = str(day_of_month).strip()
     day_of_week = str(day_of_week).strip()
 
     if day_of_month == "?" and day_of_week == "?":
-        raise InvalidCronStructureError(
-            "Only one of day-of-month or day-of-week can be '?', not both."
-        )
+        raise InvalidCronStructureError("Only one of day-of-month or day-of-week can be '?', not both.")
 
     if day_of_month != "?" and day_of_week != "?":
-        raise InvalidCronStructureError(
-            "Exactly one of day-of-month or day-of-week must be '?'."
-        )
+        raise InvalidCronStructureError("Exactly one of day-of-month or day-of-week must be '?'.")
 
     if day_of_month == "*" and day_of_week != "?":
-        raise InvalidCronStructureError(
-            "If day-of-month is '*', day-of-week must be '?'."
-        )
+        raise InvalidCronStructureError("If day-of-month is '*', day-of-week must be '?'.")
 
     if day_of_week == "*" and day_of_month != "?":
-        raise InvalidCronStructureError(
-            "If day-of-week is '*', day-of-month must be '?'."
-        )
+        raise InvalidCronStructureError("If day-of-week is '*', day-of-month must be '?'.")
 
 
 def validate_single_digit(part: int, min_value: int, max_value: int) -> bool:
@@ -67,9 +55,7 @@ def validate_single_digit(part: int, min_value: int, max_value: int) -> bool:
     return min_value <= part <= max_value
 
 
-def validate_increment(
-    base: int, increment: int, min_value: int, max_value: int, increment_max: int
-) -> bool:
+def validate_increment(base: int, increment: int, min_value: int, max_value: int, increment_max: int) -> bool:
     """Validate that an increment expression is valid.
 
     Args:
@@ -100,9 +86,7 @@ def validate_range(start: int, end: int, min_value: int, max_value: int) -> bool
     return min_value <= start <= max_value and min_value <= end <= max_value
 
 
-def validate_range_with_increment(
-    start: int, end: int, increment: int, min_value: int, max_value: int
-) -> bool:
+def validate_range_with_increment(start: int, end: int, increment: int, min_value: int, max_value: int) -> bool:
     """Validate a range with increment, e.g., '1-5/2'.
 
     Args:
@@ -122,9 +106,7 @@ def validate_range_with_increment(
     )
 
 
-def validate_specifics(
-    values: list[str], valid_int_range: range, allowed_literals: set[str]
-) -> bool:
+def validate_specifics(values: list[str], valid_int_range: range, allowed_literals: set[str]) -> bool:
     """Validate a list of specific values.
 
     Args:

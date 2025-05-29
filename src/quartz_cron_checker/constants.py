@@ -17,20 +17,14 @@ DOW_OR_PATTERN = f"({'|'.join(DOW_LIST)})"
 DOW_OCCURRENCE_PATTERN = re.compile(r"\d+#\d+")
 LAST_DOW_IN_MONTH_PATTERN = re.compile(r"\d+L", re.IGNORECASE)
 DOW_RANGE_PATTERN = re.compile(f"^{DOW_OR_PATTERN}-{DOW_OR_PATTERN}$", re.IGNORECASE)
-SPECIFIC_DOW_PATTERN = re.compile(
-    f"^{DOW_OR_PATTERN}(,{DOW_OR_PATTERN})*$", re.IGNORECASE
-)
+SPECIFIC_DOW_PATTERN = re.compile(f"^{DOW_OR_PATTERN}(,{DOW_OR_PATTERN})*$", re.IGNORECASE)
 
 # Month patterns
 MONTH_LIST = list(map(str.upper, calendar.month_abbr))[1:]
 
 MONTH_OR_PATTERN = f"({'|'.join(MONTH_LIST)})"
-MONTH_RANGE_PATTERN = re.compile(
-    f"^{MONTH_OR_PATTERN}-{MONTH_OR_PATTERN}$", re.IGNORECASE
-)
-SPECIFIC_MONTH_PATTERN = re.compile(
-    f"^{MONTH_OR_PATTERN}(,{MONTH_OR_PATTERN})*$", re.IGNORECASE
-)
+MONTH_RANGE_PATTERN = re.compile(f"^{MONTH_OR_PATTERN}-{MONTH_OR_PATTERN}$", re.IGNORECASE)
+SPECIFIC_MONTH_PATTERN = re.compile(f"^{MONTH_OR_PATTERN}(,{MONTH_OR_PATTERN})*$", re.IGNORECASE)
 
 # Day of month patterns
 LAST_DAY_OF_MONTH = "L"
