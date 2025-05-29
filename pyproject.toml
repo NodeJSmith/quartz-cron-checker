@@ -1,10 +1,10 @@
 [project]
 name = "quartz-cron-checker"
-version = "0.2.0"
+version = "0.2.1"
 description = "Simple Python library to check if a Quartz cron expression is valid."
 authors = [{ name = "Jessica Smith", email = "j.smith.git1@gmail.com" }]
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 dependencies = []
 
 [dependency-groups]
