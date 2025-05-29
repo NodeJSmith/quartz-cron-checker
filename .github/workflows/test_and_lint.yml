@@ -18,12 +18,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: setup uv
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ matrix.python-version }}
+          enable-cache: true
+          activate-environment: true
+          ignore-nothing-to-cache: true
 
-      - name: Cache pip
+      - name: Handle uv cache
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
@@ -32,14 +35,10 @@ jobs:
             ${{ runner.os }}-pip-${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: |
-          curl -LsSf https://astral.sh/uv/0.7.4/install.sh | sh
-          uv sync
+        run: uv sync
 
-      - name: Run tests
-        run: uv run pytest
+      - name: Test with python ${{ matrix.python-version }}
+        run: uv run --frozen pytest
 
-      - name: Run lint checks
-        run: |
-          uv pip install pre-commit
-          uv run pre-commit run --all-files
+      - name: Run pre-commit
+        run: uvx pre-commit run --all-files
