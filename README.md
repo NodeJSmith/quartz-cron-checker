@@ -6,7 +6,7 @@ It ensures all parts of the cron string conform to the Quartz cron spec—includ
 
 ## Features
 
-- ✅ Full support for 6- or 7-field Quartz cron expressions (`second minute hour day-of-month month day-of-week [year]`)
+- ✅ Full support for 6 or 7 field Quartz cron expressions (`second minute hour day-of-month month day-of-week [year]`)
 - ✅ Literal handling (`*`, `?`, `L`, `W`, `#`)
 - ✅ Named months (`JAN`, `FEB`, etc.) and days (`MON`, `TUE`, etc.)
 - ✅ Detailed error messages and exceptions
