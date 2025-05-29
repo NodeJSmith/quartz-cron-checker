@@ -40,7 +40,11 @@ class QuartzCronChecker:
         self.year = self.year.replace(" ", "") if self.year else None
 
     def __repr__(self) -> str:
-        return f"<QuartzCronChecker {self!s}>"
+        return (
+            f"<QuartzCronChecker(second={self.second}, minute={self.minute}, hour={self.hour}, "
+            f"day_of_month={self.day_of_month}, month={self.month}, day_of_week={self.day_of_week}, "
+            f"year={self.year})>"
+        )
 
     def __str__(self) -> str:
         parts = {
