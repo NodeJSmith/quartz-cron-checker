@@ -1,6 +1,5 @@
 import re
-
-import attrs
+from dataclasses import dataclass, field, replace
 
 from quartz_cron_checker.exceptions import (
     IncrementOutOfBoundsError,
@@ -46,14 +45,14 @@ from .constants import (
 )
 
 
-@attrs.define
+@dataclass
 class CronFieldConfig:
     name: str
     min_value: int
     max_value: int
     increment_max: int
-    allowed_literals: set[str] = attrs.field(factory=set)
-    patterns: tuple[re.Pattern, ...] = attrs.field(factory=tuple)
+    allowed_literals: set[str] = field(default_factory=set)
+    patterns: tuple[re.Pattern, ...] = field(default_factory=tuple)
     nullable: bool = False
 
     def validate(self, part: str) -> None:
@@ -121,9 +120,9 @@ SECOND_CONFIG = CronFieldConfig(
     patterns=DEFAULT_NUMERIC_PATTERNS,
 )
 
-MINUTE_CONFIG = attrs.evolve(SECOND_CONFIG, name="minute")
+MINUTE_CONFIG = replace(SECOND_CONFIG, name="minute")
 
-HOUR_CONFIG = attrs.evolve(
+HOUR_CONFIG = replace(
     SECOND_CONFIG,
     name="hour",
     min_value=0,

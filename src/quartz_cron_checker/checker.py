@@ -1,6 +1,5 @@
+from dataclasses import dataclass
 from typing import Literal
-
-import attrs
 
 from quartz_cron_checker.exceptions import InvalidCronStructureError
 from quartz_cron_checker.validators import validate_day_of_month_or_week
@@ -20,7 +19,7 @@ CRON_TEMPLATE = CRON_TEMPLATE_NO_YEAR + " {year}"
 REQUIRED_PARTS = ["second", "minute", "hour", "day_of_month", "month", "day_of_week"]
 
 
-@attrs.define
+@dataclass
 class QuartzCronChecker:
     second: str
     minute: str
@@ -31,7 +30,7 @@ class QuartzCronChecker:
     year: str | None = None
     cron_string: str | None = None
 
-    def __attrs_post_init__(self):
+    def __post_init__(self):
         self.second = self.second.replace(" ", "")
         self.minute = self.minute.replace(" ", "")
         self.hour = self.hour.replace(" ", "")
