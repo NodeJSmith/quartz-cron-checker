@@ -61,7 +61,7 @@ wheels = [
 ]
 
 [[package]]
-name = "py-quartz-cron-checker"
+name = "quartz-cron-checker"
 version = "0.1.0"
 source = { editable = "." }
 
