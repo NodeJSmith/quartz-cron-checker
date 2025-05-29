@@ -1,7 +1,10 @@
 import re
+from logging import getLogger
 from typing import Sequence
 
 from .exceptions import InvalidCronStructureError
+
+LOGGER = getLogger(__name__)
 
 
 def validate_day_of_month_or_week(
@@ -140,7 +143,7 @@ def validate_specifics(
     """
     if all(v.isdigit() for v in values):
         return all(int(v) in valid_int_range for v in values)
-    return all(v in allowed_literals for v in values)
+    return all(validate_literals(v, allowed_literals) for v in values)
 
 
 def validate_patterns(part: str, patterns: Sequence[re.Pattern]) -> bool:
@@ -156,4 +159,33 @@ def validate_patterns(part: str, patterns: Sequence[re.Pattern]) -> bool:
     """
     if part is None:
         return False
-    return any(p.match(part) for p in patterns)
+
+    for p in patterns:
+        if p.match(part):
+            LOGGER.debug("Pattern matched: %s for part: %s", p.pattern, part)
+            return True
+
+    return False
+
+
+def validate_literals(part: str, literals: set[str]) -> bool:
+    """
+    Validate a part against a set of allowed literals.
+
+    Args:
+        part (str): The cron field to validate.
+        literals (set[str]): A set of allowed literal values.
+
+    Returns:
+        bool: True if the part is in the set of literals, False otherwise.
+    """
+    if part is None:
+        return False
+
+    lcase_literals = {lit.lower() for lit in literals}
+
+    if part.lower() in lcase_literals:
+        LOGGER.debug("Literal matched: %s", part)
+        return True
+
+    return False

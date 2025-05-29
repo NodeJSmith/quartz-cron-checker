@@ -20,6 +20,7 @@ from py_quartz_cron_checker.parsers import (
 )
 from py_quartz_cron_checker.validators import (
     validate_increment,
+    validate_literals,
     validate_patterns,
     validate_range,
     validate_range_with_increment,
@@ -101,7 +102,9 @@ class CronFieldConfig:
                 )
             return
 
-        if part in self.allowed_literals or validate_patterns(part, self.patterns):
+        if validate_literals(part, self.allowed_literals) or validate_patterns(
+            part, self.patterns
+        ):
             return
 
         raise PatternOrLiteralMatchError(
