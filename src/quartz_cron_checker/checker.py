@@ -4,7 +4,7 @@ from typing import Literal
 from quartz_cron_checker.exceptions import InvalidCronStructureError
 from quartz_cron_checker.validators import validate_day_of_month_or_week
 
-from .config import (
+from .field_configs import (
     DAY_OF_MONTH_CONFIG,
     DAY_OF_WEEK_CONFIG,
     HOUR_CONFIG,
