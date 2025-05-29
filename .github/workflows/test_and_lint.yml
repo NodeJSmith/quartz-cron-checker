@@ -40,4 +40,6 @@ jobs:
         run: uv run pytest
 
       - name: Run lint checks
-        run: uv run pre-commit run --all-files
+        run: |
+          uv pip install --pre-commit
+          uv run pre-commit run --all-files
