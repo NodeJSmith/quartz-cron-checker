@@ -1,3 +1,3 @@
-from .checker import CronStr
+from .checker import QuartzCronChecker
 
-__all__ = ["CronStr"]
+__all__ = ["QuartzCronChecker"]

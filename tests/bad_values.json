@@ -4,7 +4,6 @@
     "? ? ? ? ? ?": "Can't have all fields set to '?'",
     "0 0 25 * * ?": "Invalid hour (25 > 23)",
     "0 0 * * *": "Too few fields (5 instead of 6/7, looks like UNIX cron)",
-    "0 0 12 ? JAN-MAR *": "Invalid month range (JAN-MAR is not valid Quartz syntax)",
     "0 0 12 ? * MON-FRI-SAT": "Malformed DOW range (hyphen misused)",
     "0 0 12 32 * ?": "Day out of range (no month has 32 days)",
     "0 0 12 * * * ?": "Too many fields (7 with both DOM and DOW set)",

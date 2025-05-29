@@ -21,7 +21,7 @@ REQUIRED_PARTS = ["second", "minute", "hour", "day_of_month", "month", "day_of_w
 
 
 @attrs.define
-class CronStr:
+class QuartzCronChecker:
     second: str
     minute: str
     hour: str
@@ -123,6 +123,6 @@ class CronStr:
         Returns:
             bool: True if the cron string is valid, False otherwise.
         """
-        cron = CronStr.from_cron_string(cron_str)
+        cron = QuartzCronChecker.from_cron_string(cron_str)
         cron.validate()
         return True

@@ -1,5 +1,6 @@
 import calendar
 import json
+import random
 from itertools import chain, combinations, product
 from pathlib import Path
 
@@ -7,12 +8,16 @@ import pytest
 from hypothesis import assume, given, settings
 from hypothesis import strategies as st
 
-from py_quartz_cron_checker import CronStr
+from py_quartz_cron_checker import QuartzCronChecker
 
 KNOWN_GOOD_VALUES = json.loads(
     Path(__file__).parent.joinpath("good_values.json").read_text()
 )
 BAD_VALUES = json.loads(Path(__file__).parent.joinpath("bad_values.json").read_text())
+
+
+def randomize_case(s: str) -> str:
+    return "".join(random.choice((c.upper(), c.lower())) for c in s)
 
 
 def powerset(iterable):
@@ -223,33 +228,44 @@ def cron_string(draw):
 def test_valid_cron_string_returns_true(cron_str: str):
     """Tests that the cron string is valid"""
 
-    assert CronStr.validate_cron_string(cron_str) is True
+    for func in [lambda x: x, str.lower, str.upper, randomize_case]:
+        test_str = func(cron_str)
 
-    parts = cron_str.split(" ")
-    assert CronStr(*parts).validate() is True
+        assert QuartzCronChecker.validate_cron_string(test_str) is True
+
+        parts = test_str.split(" ")
+        assert QuartzCronChecker(*parts).validate() is True
 
 
 @pytest.mark.parametrize("cron_str", list(BAD_VALUES.keys()))
 def test_invalid_cron_string_returns_false(cron_str: str):
     """Tests that the cron string is invalid"""
 
-    with pytest.raises(ValueError):
-        reason = BAD_VALUES.get(cron_str, "Unknown reason")
-        assert CronStr.validate_cron_string(cron_str) is False, reason
+    for func in [lambda x: x, str.lower, str.upper, randomize_case]:
+        test_str = func(cron_str)
 
-    parts = cron_str.split(" ")
+        with pytest.raises(ValueError):
+            reason = BAD_VALUES.get(test_str, "Unknown reason")
+            assert QuartzCronChecker.validate_cron_string(cron_str) is False, reason
 
-    exc = ValueError if len(parts) >= 6 else TypeError
+        parts = test_str.split(" ")
 
-    with pytest.raises(exc):
-        reason = BAD_VALUES.get(cron_str, "Unknown reason")
-        assert CronStr(*parts).validate() is False, reason
+        exc = ValueError if len(parts) >= 6 else TypeError
+
+        with pytest.raises(exc):
+            reason = BAD_VALUES.get(test_str, "Unknown reason")
+            assert QuartzCronChecker(*parts).validate() is False, reason
 
 
 @pytest.mark.parametrize("cron_str", KNOWN_GOOD_VALUES)
 def test_known_good_cron_string(cron_str: str):
     """Tests that the cron string is known to be good"""
 
-    assert CronStr.validate_cron_string(cron_str) is True, f"Failed for: {cron_str}"
-    parts = cron_str.split(" ")
-    assert CronStr(*parts).validate() is True, f"Failed for: {cron_str}"
+    for func in [lambda x: x, str.lower, str.upper, randomize_case]:
+        test_str = func(cron_str)
+
+        assert QuartzCronChecker.validate_cron_string(test_str) is True, (
+            f"Failed for: {test_str}"
+        )
+        parts = test_str.split(" ")
+        assert QuartzCronChecker(*parts).validate() is True, f"Failed for: {test_str}"
