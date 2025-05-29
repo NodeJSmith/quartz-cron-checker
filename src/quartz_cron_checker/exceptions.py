@@ -92,12 +92,24 @@ class PatternOrLiteralMatchError(InvalidCronPartError):
         self,
         part_name: str,
         part_value: str,
-        patterns: Sequence[re.Pattern],
+        patterns: Sequence[str],
         literals: set[str],
     ) -> None:
-        pattern_str = ", ".join(p.pattern for p in patterns)
+        pattern_str = ", ".join(p for p in patterns)
         literal_str = ", ".join(literals)
-        msg = f"Part '{part_value}' does not match any allowed pattern ({pattern_str}) or literal ({literal_str})"
+        msg = f"Part '{part_value}' does not match any literal ({literal_str}) or allowed pattern ({pattern_str})"
+        super().__init__(part_name, part_value, msg)
+
+
+class PatternSemanticValidationError(InvalidCronPartError):
+    def __init__(
+        self, part_name: str, part_value: str, pattern: re.Pattern, description: str, failure_hint: str | None = None
+    ) -> None:
+        msg = (
+            f"Part '{part_value}' matches pattern {description!r} ('{pattern.pattern}') but failed semantic validation"
+        )
+        if failure_hint:
+            msg += f": {failure_hint}"
         super().__init__(part_name, part_value, msg)
 
 
