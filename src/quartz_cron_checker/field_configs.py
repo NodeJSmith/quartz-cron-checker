@@ -31,7 +31,16 @@ from quartz_cron_checker.validators import (
     validate_specifics,
 )
 
-from .constants import DOW_LIST, LAST_DAY_OF_MONTH, LAST_WEEKDAY_OF_MONTH, MONTH_LIST
+from .constants import (
+    DOW_LIST,
+    DOW_OCCURRENCE_PATTERN,
+    LAST_DAY_OF_MONTH,
+    LAST_DOW_IN_MONTH_PATTERN,
+    LAST_N_DAYS_OF_MONTH_PATTERN,
+    LAST_WEEKDAY_OF_MONTH,
+    MONTH_LIST,
+    NEAREST_WEEKDAY_DAY_OF_MONTH_PATTERN,
+)
 from .validators import (
     DEFAULT_NUMERIC_VALIDATORS,
     DOW_OCCURRENCE_VALIDATOR,
@@ -148,7 +157,32 @@ class CronFieldConfig:
                         self.name, part, validator.pattern, validator.description, validator.failure_hint
                     )
 
+        # mixed lists, e.g. 14,18,3-39,52 - Quartz validates each element on its own
+        if "," in part:
+            for element in part.split(","):
+                if is_unlistable(element):
+                    raise PatternOrLiteralMatchError(self.name, part, self._pattern_descriptions, self.allowed_literals)
+                self.validate(element)
+            LOGGER.debug("Part %r with value %r is a valid mixed list", self.name, part)
+            return True
+
         raise PatternOrLiteralMatchError(self.name, part, self._pattern_descriptions, self.allowed_literals)
+
+
+def is_unlistable(element: str) -> bool:
+    """Return True if the element is a special character that Quartz does not allow inside a list.
+
+    Quartz rejects '?', 'L', 'LW', 'L-n', 'nW', 'nL', and 'n#n' when combined with other values.
+    """
+    if element.upper() in {"?", LAST_DAY_OF_MONTH, LAST_WEEKDAY_OF_MONTH}:
+        return True
+    special_patterns = (
+        LAST_N_DAYS_OF_MONTH_PATTERN,
+        NEAREST_WEEKDAY_DAY_OF_MONTH_PATTERN,
+        LAST_DOW_IN_MONTH_PATTERN,
+        DOW_OCCURRENCE_PATTERN,
+    )
+    return any(p.match(element) for p in special_patterns)
 
 
 SECOND_CONFIG = CronFieldConfig(
