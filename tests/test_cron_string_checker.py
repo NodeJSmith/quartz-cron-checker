@@ -269,3 +269,38 @@ def test_known_good_cron_string(cron_str: str):
         )
         parts = test_str.split(" ")
         assert QuartzCronChecker(*parts).validate() is True, f"Failed for: {test_str}"
+
+
+MIXED_LIST_GOOD_VALUES = [
+    # from the Quartz CronTrigger tutorial
+    "0/5 14,18,3-39,52 * ? JAN,MAR,SEP MON-FRI 2002-2010",
+    "0 0,15-20,30/5,50-58/2 * * * ?",
+    "0 0 1,3-5,10/2 * * ?",
+    "0 0 12 1,10-15 * ?",
+    "0 0 12 ? JAN-MAR,DEC MON-WED,FRI",
+    "0 0 12 ? 1-3,6 1-2,5",
+    "0 0 12 * * ? 2020,2025-2030",
+]
+
+MIXED_LIST_BAD_VALUES = [
+    "0 0,5-70 12 * * ?",  # range element out of bounds
+    "0 0,0/99 12 * * ?",  # increment element out of bounds
+    "0 0 12 1,,5 * ?",  # empty element
+    "0 0 12 L,5 * ?",  # L cannot be combined with other days
+    "0 0 12 15W,20 * ?",  # W cannot be combined with other days
+    "0 0 12 ? * MON,?",  # ? cannot be part of a list
+    "0 0 12 ? JAN-MAR,FOO *",  # unknown month name
+]
+
+
+@pytest.mark.parametrize("cron_str", MIXED_LIST_GOOD_VALUES)
+def test_mixed_list_is_valid(cron_str: str):
+    """Lists may mix single values, ranges, and increments in any field."""
+    assert QuartzCronChecker.validate_cron_string(cron_str) is True
+
+
+@pytest.mark.parametrize("cron_str", MIXED_LIST_BAD_VALUES)
+def test_invalid_mixed_list_is_rejected(cron_str: str):
+    """Every element of a list must be valid on its own, and special characters cannot be listed."""
+    with pytest.raises(ValueError):
+        QuartzCronChecker.validate_cron_string(cron_str)
